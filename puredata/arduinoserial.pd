@@ -1,0 +1,54 @@
+#N canvas 13 30 771 848 12;
+#X declare -lib moocow;
+#X obj 138 322 comport;
+#X msg 255 284 close;
+#X msg 165 171 devices;
+#X obj 138 459 select 10 13;
+#X obj 232 585 import moocow;
+#X text 330 585 bytes2any object needs an import;
+#X obj 138 586 bytes2any;
+#X obj 138 656 unpack f f f f f;
+#X obj 319 727 send A0;
+#X obj 389 727 s A1;
+#X text 424 725 s is short for send;
+#X obj 138 766 outlet;
+#X obj 165 740 outlet;
+#X text 28 10 This is a patch for reading messages sent by arduino
+over the serial port;
+#X text 28 46 It can be used inside your patch by copying it into the
+same folder as your pd patch and creating a new object called "arduinoserial"
+;
+#X obj 51 254 inlet;
+#X text 230 161 pressing this will print the available serial ports
+in the Pd command window;
+#X text 282 217 you need to find your arduino port and replace the
+number after "open ";
+#X text 300 282 close the port;
+#X obj 192 766 outlet;
+#X obj 219 740 outlet;
+#X obj 247 766 outlet;
+#X obj 138 524 zl group 100;
+#X text 229 453 Find the line breaks denoted by bytes 10 and 13 to
+recreate the message from arduino;
+#X text 234 522 grouping the bytes (100 would be our maximum number
+;
+#X text 260 655 you can add as many numbers (f) as you need;
+#X text 25 96 It can be also used as a standalone patch \, by e. g.
+adding sends after unpack (there are two already included);
+#X msg 224 227 open 2;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 22 0;
+#X connect 3 2 22 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 7 0 11 0;
+#X connect 7 1 9 0;
+#X connect 7 1 12 0;
+#X connect 7 2 19 0;
+#X connect 7 3 20 0;
+#X connect 7 4 21 0;
+#X connect 15 0 0 0;
+#X connect 22 0 6 0;
+#X connect 27 0 0 0;

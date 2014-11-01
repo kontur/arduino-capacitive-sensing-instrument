@@ -1,5 +1,6 @@
 int outMin = 0;
 int outMax = 100;
+int samplingRate = 100;
 
 void setup() {
   Serial.begin(9600);
@@ -23,6 +24,8 @@ void loop() {
   int a4 = map(constrain(analogRead(A4), 500, 1023), 500, 1023, outMin, outMax);
   int a5 = map(constrain(analogRead(A5), 500, 1023), 500, 1023, outMin, outMax);
   
+  /*
+  // debug printing
   Serial.println("---------------");
   
   Serial.println("Potentiometers:");
@@ -36,4 +39,18 @@ void loop() {
   Serial.println(a2);
   
   delay(500);
+  */
+
+
+  // Serial print tab separated
+  Serial.print(a3);
+  Serial.print("\t");
+  Serial.print(a4);
+  Serial.print("\t");
+  Serial.print(a0);
+  Serial.println();
+  
+  delay(samplingRate);
+   
 }
+

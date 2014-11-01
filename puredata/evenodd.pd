@@ -1,0 +1,125 @@
+#N canvas 269 286 1050 652 12;
+#X obj 230 74 f;
+#X obj 264 92 + 1;
+#X obj 264 92 mod 11;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array E07 11 float 2;
+#X coords 0 96 11 36 100 160 1;
+#X restore 528 29 graph;
+#X floatatom 320 50 0 10 999 0 - - -;
+#X obj 230 149 mtof;
+#X msg 26 94 1;
+#X obj 26 195 *~;
+#X obj 26 245 cos~;
+#X obj 26 270 hip~ 5;
+#X obj 26 220 +~ 0.1;
+#X floatatom 48 148 0 0 0 0 - - -;
+#X floatatom 176 148 0 0 200 0 - - -;
+#X floatatom 94 142 0 0 999 0 - - -;
+#X floatatom 131 144 0 0 999 0 - - -;
+#X msg 111 239 0;
+#X msg 111 264 0.1;
+#X msg 111 289 0.25;
+#X text 732 91 ADSR controls;
+#X text 106 125 A;
+#X text 805 91 D;
+#X text 176 125 S;
+#X floatatom 320 75 0 1 11 0 - - -;
+#X text 355 71 <--increment;
+#X text 355 49 <--msec;
+#X obj 26 193 *~ 0.01;
+#X obj 230 29 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 24 319 output~;
+#X text 466 666 updated for Pd version 0.37;
+#X obj 26 170 adsr 70 10 90 50 500;
+#X obj 230 124 +;
+#X floatatom 264 117 0 -48 120 0 - - -;
+#X text 299 143 <--transpose;
+#N canvas 61 76 538 208 make-table 0;
+#X obj 38 71 loadbang;
+#X text 16 11 This patch loads a sequence of pitches into E07. The
+values are floating-point \, so we could use microtones (60.5 \, for
+example) if we wish.;
+#X msg 38 99 \; E07 0 54 55 57 63 61 67 71 57 70 61 63 \; E07 yticks
+36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
+#X connect 0 0 2 0;
+#X restore 528 194 pd make-table;
+#X obj 176 50 sel 0;
+#X msg 26 69 0;
+#X text 48 125 level;
+#X obj 230 49 metro 130;
+#X obj 60 217 osc~;
+#X text 111 216 symmetry;
+#X text 147 265 even;
+#X text 147 287 odd;
+#X text 147 243 mixed;
+#X obj 230 99 tabread E07;
+#X text 253 28 <--ON/OFF;
+#X text 177 320 This patch uses a stepping sequencer to control a waveshaping
+instrument. A metronome (metro 130) drives a counter (f \, +1 \, and
+mod 11) which counts repeatedly through 11 values which are read from
+the stored table (tabread E07). The values may be read in sequence
+\, by twos or threes \, etc. \, according to the "increment" parameter.
+;
+#X text 177 422 The metronome also triggers an ADSR envelope \, whose
+parameters may also be changed using the "level" \, "A" \, "D" \, and
+"S" controls.;
+#X text 137 12 SEQUENCED WAVESHAPING SYNTHESIZER;
+#X text 177 476 The synthesis (osc~ \, *~ \, +~ 0.1 \, cos~) is a very
+simple application of the waveshaping technique. The oscillator (whose
+amplitude depends on the ADSR generator) is used as an index into the
+"cos~" wavetable. An additional offset ("symmetry") controls how the
+oscillator's waveform is centered on the wavetable. If the offset is
+zero \, the oscillator reads into the (even) cosine function (producing
+only even harmonics). If the offset is 0.25 \, we read 1/4 wave into
+the cosine function: the result is an odd function and we get odd harmonics.
+Between the two we get mixtures of even and odd.;
+#X obj 660 448 tabwrite E07;
+#X msg 712 92 \; E07 0 15 55 45 63 61 67 45 57 70 61 63 \; E07 yticks
+36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
+#X obj 28 -12 inlet;
+#X obj 82 -12 inlet;
+#X obj 137 -12 inlet;
+#X obj 200 -9 * 3;
+#X msg 720 216 \; E07 0 0 \$1 \$3 \$2 \$2 \$1 0 \$3 \$2 0 0 \$1 0 \;
+E07 yticks 36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
+#X connect 0 0 1 0;
+#X connect 0 0 43 0;
+#X connect 1 0 2 0;
+#X connect 2 0 0 1;
+#X connect 4 0 37 1;
+#X connect 5 0 38 0;
+#X connect 6 0 29 0;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 27 0;
+#X connect 9 0 27 1;
+#X connect 10 0 8 0;
+#X connect 11 0 29 1;
+#X connect 12 0 29 4;
+#X connect 13 0 29 2;
+#X connect 14 0 29 3;
+#X connect 15 0 10 1;
+#X connect 16 0 10 1;
+#X connect 17 0 10 1;
+#X connect 22 0 1 1;
+#X connect 25 0 7 0;
+#X connect 26 0 34 0;
+#X connect 26 0 37 0;
+#X connect 29 0 25 0;
+#X connect 30 0 5 0;
+#X connect 31 0 30 1;
+#X connect 34 0 35 0;
+#X connect 35 0 29 0;
+#X connect 37 0 0 0;
+#X connect 37 0 6 0;
+#X connect 38 0 7 1;
+#X connect 43 0 30 0;
+#X connect 50 0 49 0;
+#X connect 51 0 11 0;
+#X connect 52 0 13 0;
+#X connect 53 0 54 0;
+#X connect 54 0 4 0;
+#X connect 54 0 14 0;
+#X connect 55 0 49 0;
