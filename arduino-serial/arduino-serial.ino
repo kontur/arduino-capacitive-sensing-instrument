@@ -1,3 +1,6 @@
+int outMin = 0;
+int outMax = 100;
+
 void setup() {
   Serial.begin(9600);
   pinMode(A0, INPUT);
@@ -9,12 +12,16 @@ void setup() {
 }
 
 void loop() {
-  int a0 = analogRead(A0);
-  int a1 = analogRead(A1);
-  int a2 = analogRead(A2);
-  int a3 = analogRead(A3);
-  int a4 = analogRead(A4);
-  int a5 = analogRead(A5);
+  // read photoresistors and clamp to 0-100
+  int a0 = map(analogRead(A0), 0, 1023, outMin, outMax);
+  int a1 = map(analogRead(A1), 0, 1023, outMin, outMax);
+  int a2 = map(analogRead(A2), 0, 1023, outMin, outMax);
+  
+  // read potentiometers and clamp to 0-100
+  // output originally ranges from 500-1023 because of 10kOhm resistor
+  int a3 = map(constrain(analogRead(A3), 500, 1023), 500, 1023, outMin, outMax);
+  int a4 = map(constrain(analogRead(A4), 500, 1023), 500, 1023, outMin, outMax);
+  int a5 = map(constrain(analogRead(A5), 500, 1023), 500, 1023, outMin, outMax);
   
   Serial.println("---------------");
   
@@ -28,6 +35,5 @@ void loop() {
   Serial.println(a1);
   Serial.println(a2);
   
-  
-  delay(10);
+  delay(500);
 }
