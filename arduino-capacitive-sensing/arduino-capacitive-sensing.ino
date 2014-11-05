@@ -64,5 +64,5 @@ void loop()
     Serial.print(map(constrain(v4, min_in, max_in), min_in, max_in, min_out, max_out));
     Serial.print("\t");
     Serial.println();
-    delay(10);                             // arbitrary delay to limit data to serial port 
+    delay(25);                             // arbitrary delay to limit data to serial port 
 }
