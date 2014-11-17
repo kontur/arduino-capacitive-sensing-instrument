@@ -1,35 +1,47 @@
 #include <CapacitiveSensor.h>
 
-
 /*
- * CapitiveSense Library Demo Sketch
- * Paul Badger 2008
- * Uses a high value resistor e.g. 10M between send pin and receive pin
- * Resistor effects sensitivity, experiment with values, 50K - 50M. Larger resistor values yield larger sensor values.
- * Receive pin is the sensor pin - try different amounts of foil/metal on this pin
+ * Arduino musical capacitive sensing instrument code
+ * Johannes Neumeier 2014
+ *
+ * Created at Physical Interaction Design course at
+ * Aalto University, Media Lab, SOPI research group
+ * fall 2014
+ *
+ * Arduino code based on:
+ * CapitiveSense Library Demo Sketch Paul Badger 2008
  */
 
-
-CapacitiveSensor cs23 = CapacitiveSensor(2,3);        // 10M resistor between pins 4 & 2, pin 2 is sensor pin, add a wire and or foil if desired
-CapacitiveSensor cs24 = CapacitiveSensor(2,4);        // 10M resistor between pins 4 & 8, pin 8 is sensor pin, add a wire and or foil
+// capacitive sensors
+// digital pins:
+CapacitiveSensor cs23 = CapacitiveSensor(2,3);
+CapacitiveSensor cs24 = CapacitiveSensor(2,4);
 CapacitiveSensor cs25 = CapacitiveSensor(2,5);
 CapacitiveSensor cs26 = CapacitiveSensor(2,6);
 CapacitiveSensor cs27 = CapacitiveSensor(2,7);
 CapacitiveSensor cs28 = CapacitiveSensor(2,8);
-
+// analog pins
 CapacitiveSensor cs2a0 = CapacitiveSensor(2,A0);
 CapacitiveSensor cs2a1 = CapacitiveSensor(2,A1);
 CapacitiveSensor cs2a2 = CapacitiveSensor(2,A2);
 CapacitiveSensor cs2a3 = CapacitiveSensor(2,A3);
 
+// save "last" value on every read to smoothen values
 int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, v6 = 0, v7 = 0, v8 = 0, v9 = 0, v10 = 0;
-float filter = 0.85;
-int min_in = 20, max_in = 200, min_out = 0, max_out = 100;
+
+// smoothening amount from 0-1
+float filter = 0.85; 
+
+// min_in and max_in need to be empirically tested with the configured hardware setup
+// as the physical properties of the equipment change the reads
+// min_out and max_out define the normalized range of values written to the serial port
+int min_in = 20, max_in = 700, min_out = 0, max_out = 100; 
 
 void setup()                    
 {
-   cs23.set_CS_AutocaL_Millis(0xFFFFFFFF);     // turn off autocalibrate on channel 1 - just as an example
    Serial.begin(9600);
+   
+   // set additional analog pins for input
    pinMode(A0, INPUT);
    pinMode(A1, INPUT);
    pinMode(A2, INPUT);
@@ -49,6 +61,8 @@ void loop()
     long total9 = cs2a2.capacitiveSensor(30);
     long total10 = cs2a3.capacitiveSensor(30);
     
+    // apply dampening to all new values, so that the 
+    // fluctuations are less extrem between reads
     v1 = filter * v1 + (1 - filter) * total1;
     v2 = filter * v2 + (1 - filter) * total2;
     v3 = filter * v3 + (1 - filter) * total3;
@@ -61,7 +75,8 @@ void loop()
     v10 = filter * v10 + (1 - filter) * total10;
     
     /*
-    Serial.print("\t");                    // tab character for debug windown spacing
+    // debug print to see the actual unnormalized value
+    Serial.print("\t");
     Serial.print(total1);
     Serial.print("\t");
     Serial.print(total2);
@@ -84,6 +99,7 @@ void loop()
     Serial.println();
     */
     
+    // print normalized values for each sensor between min_out and max_out
     Serial.print(map(constrain(v1, min_in, max_in), min_in, max_in, min_out, max_out));
     Serial.print("\t");
     Serial.print(map(constrain(v2, min_in, max_in), min_in, max_in, min_out, max_out));
@@ -105,6 +121,8 @@ void loop()
     Serial.print(map(constrain(v10, min_in, max_in), min_in, max_in, min_out, max_out));
     Serial.print("\t");
     Serial.println();
+    /**/
     
-    delay(25);                             // arbitrary delay to limit data to serial port 
+    // arbitrary delay to limit data to serial port 
+    delay(25);     
 }
